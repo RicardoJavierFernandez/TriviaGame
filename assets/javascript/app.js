@@ -36,6 +36,23 @@ var questionAnswer = {
                   'd': "Sonny Liston"
                   },
         correctAnswer: 'b'
+    },
+    question4: {
+        question: "How many NBA championships did Michael Jordan win with the Chicago Bulls?",
+        answers: {'a': "3",
+                  'b': "5",
+                  'c': "8",
+                  'd': "6"
+                 },
+        correctAnswer: 'd'
+    },
+    question5: {
+        question: "Which country has won the most futbol (soccer) World Cups?",
+        answers: {'a': "Argentina",
+                  'b': "Germany",
+                  'c': "Italy",
+                  'd': "Brazil"},
+        correctAnswer: 'd'
     }
 };
 
@@ -94,7 +111,10 @@ function loadPage()
     $('.container-1').css({"display" : 'block'});
 
     // Load the content of the page
-    $('.container-1').append('<div id="box-1"><p>Totally Trivial Trivia</p> <h2>Time remaining: <a id="time"></a></h2></div><div class="Q-A"><div id="questions">Question Here</div><div class="answers">Answers Here</div></div>');
+    $('.container-1').append('<div id="box-1"><p>Totally Trivial Trivia</p>' + 
+    '<h2>Time remaining: <a id="time"></a></h2></div>' +
+    '<div class="Q-A"><div id="questions">Question Here</div>' +
+    '<div class="answers">Answers Here</div></div>');
 
     loadQuestionAnswer();
 
@@ -116,7 +136,7 @@ function loadQuestionAnswer()
 }
 
 
-function checkAnswer(event)
+function checkAnswer()
 {
     var userAnswerValue = $(this).attr('value');
     var correctAns = currentQuestion.correctAnswer; 
@@ -138,7 +158,7 @@ function checkAnswer(event)
 }
 
 
-// Reset function to restart the timer and change the text within the div with the id = time.
+// Reset function to restart the timer and change to the next question
 function reset()
 {
     time = 30; // reset time to 30 units
@@ -165,8 +185,7 @@ function countDown()
 
     else
     {
-        unanswered ++;
-        // if time runs out, increase unanswered variable by 1
+        unanswered ++; // if time runs out, increase unanswered variable by 1
         reset(); // call reset function to reset the page
         loadQuestionAnswer();
     }    
