@@ -1,3 +1,4 @@
+// Create variables for the game
 var clockRunning = false;
 var intervalId;
 var time = 30;
@@ -59,7 +60,7 @@ function randomQuestion(obj)
         while (0 != currentIndex)
         {
             // Pick a random element
-            randomIndex = Math.floor(Math.random() * currentIndex);
+            randomIndex = Math.floor(Math.random() * currentIndex); //randomIndex will not be great than n-1
             currentIndex -= 1;
 
             // Swap the random index with the current index
@@ -68,11 +69,8 @@ function randomQuestion(obj)
             array[currentIndex] = array[randomIndex];
             array[randomIndex] = temporaryValue;
         }
-
         return array;
-        
     }
-   
     return shuffle(quesAnswerKeys);
 }
 
@@ -82,27 +80,61 @@ var currentQuestion = questionAnswer[shuffledQuestions[questionCounter]];
 // Create onclick event; when the Start div is pressed, the element is removed and the page content is loaded
 $('#start-btn').on('click', loadPage);
 
-
 /* loadPage function loads the content of the page and calls the start function which starts
 the timer counting down from 30 seconds */ 
 function loadPage()
 {
-    // Remove div with Start
-    $('#start-btn').remove();
+    // Remove div with Start if it exists (only exists when the page is loaded)
+    if ($('#start-btn'))
+    {
+        $('#start-btn').remove();
+    }
 
     // Remove flex property from CSS style
     $('.container-1').css({"display" : 'block'});
 
     // Load the content of the page
-    $('.container-1').append('<div id="box-1"> <p>Totally Trivial Trivia</p> <h2>Time remaining: <a id="time"></a></h2></div><div class="Q-A"><div id="questions">Question Here</div><div class="answers">Answers Here</div></div>');
+    $('.container-1').append('<div id="box-1"><p>Totally Trivial Trivia</p> <h2>Time remaining: <a id="time"></a></h2></div><div class="Q-A"><div id="questions">Question Here</div><div class="answers">Answers Here</div></div>');
 
-    $('#time').text(time + ' seconds');
-
-    console.log(currentQuestion)
-    $('#questions').text(currentQuestion.question);
+    loadQuestionAnswer();
 
     // start function starts the timer
     start();
+}
+
+
+function loadQuestionAnswer()
+{
+    $('#time').text(time + ' seconds');
+    $('#questions').text(currentQuestion.question);
+    $('.answers').html('<ol><li class="ans" value="a">' + 
+                    currentQuestion.answers['a'] + '</li><li class="ans" value="b">' + 
+                    currentQuestion.answers['b'] + '</li><li class="ans" value="c">' + 
+                    currentQuestion.answers['c'] + '</li><li class="ans" value="d">' +
+                    currentQuestion.answers['d'] + '</li></ol>');
+    $('.ans').on('click', checkAnswer);
+}
+
+
+function checkAnswer(event)
+{
+    var userAnswerValue = $(this).attr('value');
+    var correctAns = currentQuestion.correctAnswer; 
+
+    if (userAnswerValue === correctAns)
+    {
+        correct ++;
+        reset();
+    }
+    else 
+    {
+        incorrect ++;
+        reset();
+    }
+    if (questionCounter < shuffledQuestions.length)
+    {
+        loadQuestionAnswer();
+    }
 }
 
 
@@ -111,47 +143,62 @@ function reset()
 {
     time = 30; // reset time to 30 units
     questionCounter ++;
-    currentQuestion = questionAnswer[shuffledQuestions[questionCounter]];
-    $('#time').text(time + ' seconds');
-    $('#questions').text(shuffledQuestions[questionCounter]);
+    currentQuestion = questionAnswer[shuffledQuestions[questionCounter]];  
 }
 
-// Function reduces the time variable by one every second
+
+// Function reduces the time variable by one unit every second
 function countDown()
 {
+    if (questionCounter === shuffledQuestions.length)
+    {
+        console.log("Game over... your score is below");
+        gameOver();
+        stop();
+    }
+
     if (time > 0)
     {
         time --; // reduce time by 1 unit
         $('#time').text(time + ' seconds');
+    }
 
-    }
-    else if ((questionCounter+1) === shuffledQuestions.length)
+    else
     {
-        console.log("Game over... your score is below");
-        stop();
-    }
-    else {
-        unanswered ++; // if time runs out, increase unanswered variable by 1
+        unanswered ++;
+        // if time runs out, increase unanswered variable by 1
         reset(); // call reset function to reset the page
-        console.log('Question went unanswered ' + unanswered)
-        console.log(currentQuestion);
-        $('#questions').text(currentQuestion.question);
-    }
-    
+        loadQuestionAnswer();
+    }    
 }
 
-// Function triggers the countDown function which reduces the time variable by one unit. The start functino calls the countDown function every second.
+// start function triggers the countDown function which reduces the time variable by one unit. The start function calls the countDown function every second.
 function start()
 {
     if (!clockRunning)
     {
-        intervalId = setInterval(countDown, 100);
+        intervalId = setInterval(countDown, 1000);
         clockRunning = true;
     }
 }
+
 
 function stop()
 {
     clearInterval(intervalId);
     clockRunning = false;
 }
+
+
+function gameOver()
+{
+    $('.container-1').empty();
+    $('.container-1').html('<div>Correct Answers:' + correct + '</div>' 
+                        + '<div>Incorrect Answers: ' + incorrect + '</div>' 
+                        + '<div>Unanswered Questions: ' + unanswered + '</div>')
+    $('.container-1 div').css({'text-align': 'center', 
+                           'font-size': '34px',
+                           'margin': 'auto',
+                           'padding-top': '50px'})
+}
+

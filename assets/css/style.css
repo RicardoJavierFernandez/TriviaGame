@@ -39,6 +39,9 @@ body {
     font-size: 24px;
 }
 
+.questions {
+    width: 80%;
+}
 
 #box-1 p, h2{
     padding-left: 10px;
@@ -53,4 +56,26 @@ body {
     font-weight: 800;
     color: #D00000;
     padding: 50px 5px 0px 5px;
-};
+}
+
+.answers {
+    width: 60%;
+    margin: auto;
+}
+
+.answers ol {
+    margin: 20px auto;
+    list-style: upper-alpha;
+}
+
+.answers li{
+    position: relative;
+    left: -20px;
+}
+
+.answers li:hover {
+    background: #FFBA08;
+    color: #D00000;
+    opacity: 0.6;
+    cursor: pointer;
+}
