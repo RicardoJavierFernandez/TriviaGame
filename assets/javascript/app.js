@@ -62,7 +62,8 @@ function randomQuestion(obj)
 {
     var quesAnswerKeys = Object.keys(obj);
 
-    function shuffle(array) {
+    function shuffle(array) 
+    {
         var currentIndex = array.length
         var temporaryValue;
         var randomIndex;
@@ -172,7 +173,6 @@ function countDown()
 {
     if (questionCounter === shuffledQuestions.length)
     {
-        console.log("Game over... your score is below");
         gameOver();
         stop();
     }
